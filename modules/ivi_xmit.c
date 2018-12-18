@@ -621,6 +621,10 @@ int ivi_v6v4_xmit(struct sk_buff *skb) {
 			next_hdr = *ext_hdr;
 			ext_hdr += (*(ext_hdr + 1) << 2) + 8;
 		}
+		else if (next_hdr == 0x00 && *(ext_hdr + 1) == 0x00) {
+		    printk(KERN_ERR "ivi_v6v4_xmit: unsupported protocol header\n");
+		    return 0;   // Drop malformed packets instead of looping forever
+		}
 		else {
 			printk(KERN_INFO "other header type is %d, length is %d\n", next_hdr, *(ext_hdr + 1));
 			plen -= (*(ext_hdr + 1) << 3) + 8;
